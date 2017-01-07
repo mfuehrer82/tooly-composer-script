@@ -128,6 +128,10 @@ class Processor
      */
     private function removeFromDir($dir, array $excludeToolNames = [])
     {
+        if (false === is_dir($dir)) {
+            return;
+        }
+
         foreach (scandir($dir) as $entry) {
             $path = $dir . DIRECTORY_SEPARATOR . $entry;
 

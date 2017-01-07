@@ -121,4 +121,29 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
         $processor = new Processor($this->io, $this->helper, $this->configuration);
         $processor->process($tool);
     }
+
+    public function testCantCleanUpNonExistingDirectory()
+    {
+        ToolFactory::createTool('tool', __DIR__, ['url' => false]);
+
+        $filesystem = $this
+            ->getMockBuilder(Filesystem::class)
+            ->getMock();
+
+        $this->configuration
+            ->method('getBinDirectory')
+            ->willReturn(sprintf('%s/missed', __DIR__));
+
+        $this->configuration
+            ->method('getTools')
+            ->willReturn([]);
+
+        $this->helper
+            ->method('getFileSystem')
+            ->willReturn($filesystem);
+
+        $processor = new Processor($this->io, $this->helper, $this->configuration);
+
+        $processor->cleanUp();
+    }
 }
